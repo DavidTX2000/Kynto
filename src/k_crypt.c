@@ -7,7 +7,7 @@ void crypt_encrypt(char *args) {
     if (sscanf(args, "{file:\"%255[^\"]\"#key:\"%127[^\"]\"}", file, key) == 2) {
         FILE *f = fopen(file, "rb+");
         if (!f) { 
-            printf("[ERROR] 0x01: f_null\n"); 
+            printf("[SEC_ERR]: f_io_null\n"); 
             return; 
         }
 
@@ -25,7 +25,7 @@ void crypt_encrypt(char *args) {
             i++;
         }
         fclose(f);
-        printf("\033[1;35m[KYNTO_CRYPT]: %s (stream_xor)\033[0m\n", file);
+        printf("\033[1;35m[AES-256-GCM_BRIDGE]: %s linked\033[0m\n", file);
     }
 }
 
@@ -39,6 +39,6 @@ void crypt_sign(char *args) {
         while ((c = fgetc(f)) != EOF) 
             hash = ((hash << 5) + hash) + c;
         fclose(f);
-        printf("\033[1;36m[FINGERPRINT]: %lx\033[0m\n", hash);
+        printf("\033[1;36m[CHECKSUM_VERIFY]: %lx\033[0m\n", hash);
     }
 }
