@@ -1,4 +1,5 @@
 # 🪐 Kynto Engine v4
+![C](https://img.shields.io/badge/language-C-blue.svg) ![Version](https://img.shields.io/badge/version-4.0.0--alpha-orange) ![Platform](https://img.shields.io/badge/platform-Termux-green)
 **A High-Performance Modular Scripting Engine for Android/Termux.**
 
 Kynto is designed for developers who need low-level control over Android systems without the overhead of heavy interpreters. Built in C, it allows for native execution of system tasks, hardware interaction, and secure data processing.
