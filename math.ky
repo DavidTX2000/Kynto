@@ -1,8 +1,6 @@
 module {./modules/kynto_commands.so}
 
-set{a = 50}
-set{b = 50}
-print{--- Math Test ---}
-print{Result of a + b:}
-print{100}
-
+print{--- Kynto Real Math Test ---}
+set{sum = 50 + 75}
+set{mult = 10 * 10}
+print{Calculations processed by C module.}

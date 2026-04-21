@@ -1,0 +1,3 @@
+module {./modules/kynto_commands.so}
+hardware{get: "battery"}
+hardware{get: "temp"}

@@ -1,0 +1,4 @@
+module {./modules/kynto_commands.so}
+
+print{Triggering Android Notification...}
+notify{Kynto v4.0: Process Finished! 🚀}
