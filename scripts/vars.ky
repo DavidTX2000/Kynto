@@ -1,0 +1,3 @@
+module {./memory.so}
+set {$ID123="SENHA_MESTRA"}
+print {O codigo ID123 libera: $ID123}
