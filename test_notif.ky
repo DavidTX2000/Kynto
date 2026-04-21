@@ -1,0 +1,8 @@
+module {./modules/kynto_ui.so}
+
+ui{color: "green"}
+print{--- KYNTO NOTIFICATION TEST ---}
+ui{action: "notify:System Audit is 100% Stable"}
+ui{color: "reset"}
+
+print{Check your status bar now!}
