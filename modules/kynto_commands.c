@@ -1,48 +1,51 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-const char *cmds[] = {"print", "echo", "set", "notify", "hardware", NULL};
-const char** get_commands() { return cmds; }
+/* --- Kynto Engine: Native Core Modules --- */
 
-void execute(const char *cmd, const char *arg) {
-    if (strcmp(cmd, "print") == 0 || strcmp(cmd, "echo") == 0) {
-        printf("%s\n", arg);
-    }
-    else if (strcmp(cmd, "set") == 0) {
-        int n1, n2;
-        char var[32], op;
-        if (sscanf(arg, "%s = %d %c %d", var, &n1, &op, &n2) == 4) {
-            if (op == '+') printf("[Var %s] Result: %d\n", var, n1 + n2);
-            else if (op == '*') printf("[Var %s] Result: %d\n", var, n1 * n2);
-            else if (op == '-') printf("[Var %s] Result: %d\n", var, n1 - n2);
-        } else {
-            printf("[Var Set]: %s\n", arg);
+void hardware_get(char* param) {
+    if (strcmp(param, "battery") == 0) {
+        FILE *f = fopen("/sys/class/power_supply/battery/capacity", "r");
+        if (f) {
+            int cap;
+            fscanf(f, "%d", &cap);
+            fclose(f);
+            printf("[Kynto HW] Battery: %d%%\n", cap);
+        }
+    } else if (strcmp(param, "temp") == 0) {
+        FILE *f = fopen("/sys/class/thermal/thermal_zone0/temp", "r");
+        if (f) {
+            int temp;
+            fscanf(f, "%d", &temp);
+            fclose(f);
+            printf("[Kynto HW] Temp: %.1f°C\n", temp / 1000.0);
         }
     }
-    else if (strcmp(cmd, "notify") == 0) {
-        char sys[512];
-        snprintf(sys, sizeof(sys), "termux-notification -t 'Kynto Engine' -c '%s'", arg);
-        system(sys);
-    }
-    else if (strcmp(cmd, "hardware") == 0) {
-        FILE *fp;
-        char buffer[16];
-        if (strstr(arg, "battery") != NULL) {
-            fp = fopen("/sys/class/power_supply/battery/capacity", "r");
-            if (fp) {
-                fgets(buffer, sizeof(buffer), fp);
-                buffer[strcspn(buffer, "\n")] = 0;
-                printf("[Kynto HW] Battery: %s%%\n", buffer);
-                fclose(fp);
-            }
-        } else if (strstr(arg, "temp") != NULL) {
-            fp = fopen("/sys/class/power_supply/battery/temp", "r");
-            if (fp) {
-                fgets(buffer, sizeof(buffer), fp);
-                printf("[Kynto HW] Temp: %.1f°C\n", atof(buffer) / 10.0);
-                fclose(fp);
-            }
-        }
-    }
+}
+
+void network_ping(char* host) {
+    printf("[Kynto NET] Latency test to: %s\n", host);
+    char cmd[100];
+    sprintf(cmd, "ping -c 1 -W 1 %s > /dev/null && echo '[Kynto NET] Status: ONLINE' || echo '[Kynto NET] Status: OFFLINE'", host);
+    system(cmd);
+}
+
+void process_list() {
+    printf("[Kynto OS] Top priority processes:\n");
+    system("ps -e | head -n 5");
+}
+
+void security_user() {
+    char *user = getlogin();
+    printf("[Kynto SEC] Session Owner: %s\n", user ? user : "termux_auth");
+}
+
+/* Função principal de execução de comandos (Exemplo simplificado) */
+void execute_kynto(char* cmd, char* arg) {
+    if (strcmp(cmd, "hardware") == 0) hardware_get(arg);
+    if (strcmp(cmd, "network") == 0) network_ping(arg);
+    if (strcmp(cmd, "process") == 0) process_list();
+    if (strcmp(cmd, "user") == 0) security_user();
 }
