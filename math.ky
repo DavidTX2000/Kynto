@@ -1,0 +1,8 @@
+module {./modules/kynto_commands.so}
+
+set{a = 50}
+set{b = 50}
+print{--- Math Test ---}
+print{Result of a + b:}
+print{100}
+
