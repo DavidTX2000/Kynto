@@ -1,0 +1,9 @@
+// Kynto Script Test
+print("Hello World! Kynto is running.")
+
+set x = 50
+set y = 50
+set result = x + y
+print("Math Test (50+50):")
+print(result)
+
