@@ -1,0 +1,6 @@
+module {./std.so}
+set {$USER="david"}
+str_upper {$USER}
+math_add {$SOMA=15+35}
+print {USER: $USER | RESULT: $SOMA}
+sys_exec {uname -a}

@@ -1,0 +1,10 @@
+module {./kynto_std.so}
+help
+set {$NAME="david"}
+str.upper {NAME}
+print {DEVELOPER: $NAME}
+math.add {50,50}
+print {THE SUM OF 50+50 IS: $RESULT}
+file.write {test.txt,Kynto Engine is online!}
+sys.exec {ls -l test.txt}
+net.ping {8.8.8.8}

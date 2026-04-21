@@ -1,0 +1,3 @@
+help
+set {$NAME="USER"}
+print {HELLO $NAME}
