@@ -1,0 +1,6 @@
+module {./modules/kynto_overkill.so}
+
+print{Iniciando Dashboard...}
+hw{action: "dashboard"}
+echo{Auditoria Completa.}
+

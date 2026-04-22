@@ -1,0 +1,11 @@
+# KYNTO ENGINE - OFFICIAL SCRIPT
+print{------------------------------------------}
+print{    KYNTO OS - GLOBAL ADVANCED AUDIT      }
+print{------------------------------------------}
+
+# Esse comando dispara o kynto_overkill.so
+hw{action: "dashboard"}
+
+print{------------------------------------------}
+print{      TEST COMPLETED SUCCESSFULLY       }
+print{------------------------------------------}

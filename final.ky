@@ -1,0 +1,5 @@
+module {./modules/kynto_final_hw.so}
+
+print{Establishing connection to Kynto OS Core...}
+hw{action: "dashboard"}
+print{Audit Complete. All systems nominal.}

@@ -1,0 +1,3 @@
+module {./modules/kynto_overkill.so}
+print{>>> INITIALIZING KYNTO DEEP AUDIT PRO v10.0 <<<}
+hw{action: "dashboard"}

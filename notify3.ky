@@ -1,0 +1,5 @@
+module {./modules/kynto_commands.so}
+
+print{Enviando notificação...}
+notify{Kynto Engine: Alpha 272 Clones}
+
