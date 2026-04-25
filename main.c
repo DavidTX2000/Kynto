@@ -23,7 +23,7 @@ void scan_source(const char* so_path) {
     if (ext) strcpy(ext, ".c");
 
     FILE *f = fopen(c_path, "r");
-    if (!f) return;
+    if (!f) return; // SE O .C NÃO ESTIVER NA PASTA, ELE PARA AQUI SILENCIOSAMENTE!
 
     char line[256];
     while (fgets(line, sizeof(line), f)) {
@@ -56,6 +56,31 @@ void scan_source(const char* so_path) {
                         strcpy(registry[reg_count].origin_module, so_path);
                         reg_count++;
                     }
+                    // LÓGICA AMPLIADA PARA OS NOVOS MÓDULOS
+                    if (strstr(fname, "monitor")) {
+                        strcpy(registry[reg_count].cmd, "monitor");
+                        strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
+                        reg_count++;
+                    }
+                    if (strstr(fname, "benchmark")) {
+                        strcpy(registry[reg_count].cmd, "benchmark");
+                        strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
+                        reg_count++;
+                    }
+                    if (strstr(fname, "debug")) {
+                        strcpy(registry[reg_count].cmd, "debug");
+                        strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
+                        reg_count++;
+                    }
+                    if (strstr(fname, "log")) {
+                        strcpy(registry[reg_count].cmd, "log");
+                        strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
+                        reg_count++;
+                    }
                 }
             }
         }
@@ -79,7 +104,6 @@ void load_module(char* line) {
 void execute_module_direct(char* mod_path, char* function, int line_num) {
     int loaded = 0;
     for(int i=0; i<mod_count; i++) {
-        char path[256];
         void *h = dlopen(mod_path, RTLD_NOLOAD);
         if(h) { loaded = 1; dlclose(h); break; }
     }

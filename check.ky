@@ -1,0 +1,7 @@
+module{./modules/kynto_debug.so}
+module{./modules/kynto_benchmark.so}
+
+print{--- TESTANDO NOVOS MODULOS ---}
+debug{action:"on"}
+benchmark{action:"run"}
+debug{action:"off"}
