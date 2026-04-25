@@ -10,6 +10,7 @@ int mod_count = 0;
 typedef struct {
     char cmd[64];
     char target_func[64];
+    char origin_module[256];
 } Map;
 
 Map registry[500];
@@ -36,19 +37,23 @@ void scan_source(const char* so_path) {
                 if (reg_count < 500) {
                     strcpy(registry[reg_count].cmd, fname);
                     strcpy(registry[reg_count].target_func, fname);
+                    strcpy(registry[reg_count].origin_module, so_path);
                     reg_count++;
                     
                     if (strstr(fname, "dashboard")) {
                         strcpy(registry[reg_count].cmd, "ultra");
                         strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
                         reg_count++;
                         strcpy(registry[reg_count].cmd, "hw");
                         strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
                         reg_count++;
                     }
                     if (strstr(fname, "ui_window") || strstr(fname, "ui_color")) {
                         strcpy(registry[reg_count].cmd, "ui");
                         strcpy(registry[reg_count].target_func, fname);
+                        strcpy(registry[reg_count].origin_module, so_path);
                         reg_count++;
                     }
                 }
@@ -71,7 +76,19 @@ void load_module(char* line) {
     }
 }
 
-void execute_module_direct(char* mod_path, char* function) {
+void execute_module_direct(char* mod_path, char* function, int line_num) {
+    int loaded = 0;
+    for(int i=0; i<mod_count; i++) {
+        char path[256];
+        void *h = dlopen(mod_path, RTLD_NOLOAD);
+        if(h) { loaded = 1; dlclose(h); break; }
+    }
+
+    if(!loaded) {
+        printf("\033[1;31mError on line %d: Module '%s' is required for this command.\033[0m\n", line_num, mod_path);
+        return;
+    }
+
     void *handle = dlopen(mod_path, RTLD_LAZY);
     if (!handle) return;
     void (*func)() = dlsym(handle, function);
@@ -112,7 +129,7 @@ void parse_and_execute(char* line, int line_num) {
     }
 
     if (strstr(line, "hw{action: \"dashboard\"") != NULL) {
-        execute_module_direct("./modules/kynto_overkill.so", "print_overkill_dashboard");
+        execute_module_direct("./modules/kynto_ultra.so", "print_overkill_dashboard", line_num);
         return;
     }
 
@@ -134,9 +151,9 @@ void parse_and_execute(char* line, int line_num) {
     if (strcmp(cmd, "module") == 0 || strcmp(cmd, "loop") == 0) return;
 
     int found = 0;
-    for (int i = 0; i < mod_count; i++) {
-        for (int j = 0; j < reg_count; j++) {
-            if (strcmp(cmd, registry[j].cmd) == 0) {
+    for (int j = 0; j < reg_count; j++) {
+        if (strcmp(cmd, registry[j].cmd) == 0) {
+            for (int i = 0; i < mod_count; i++) {
                 void (*f)(char*) = dlsym(loaded_handles[i], registry[j].target_func);
                 if (f) {
                     f(arg);
@@ -145,20 +162,12 @@ void parse_and_execute(char* line, int line_num) {
                     break;
                 }
             }
-        }
-        if (found) break;
-
-        void (*f)(char*) = dlsym(loaded_handles[i], cmd);
-        if (f) {
-            f(arg);
-            fflush(stdout);
-            found = 1;
-            break;
+            if (found) break;
         }
     }
 
     if (!found) {
-        printf("\033[1;31mError on line %d: Unknown command '%s'\033[0m\n", line_num, cmd);
+        printf("\033[1;31mError on line %d: Unknown command '%s' (Module missing or not loaded)\033[0m\n", line_num, cmd);
     }
 }
 
